@@ -1,0 +1,31 @@
+{
+  "name": "drive-out",
+  "version": "0.0.0",
+  "description": "api and samples to download contents from google drive in a JSON fashion",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "google",
+    "drive",
+    "alternative",
+    "api"
+  ],
+  "author": "Daniele Guido",
+  "license": "ISC",
+  "dependencies": {
+    "promise": "^6.0.0",
+    "cli-color": "^0.3.2",
+    "request": "^2.44.0",
+    "googleapis": "^1.0.14",
+    "request-sync": "0.0.5"
+  },
+  "devDependencies": {
+    "grunt-cli": "^0.1.13",
+    "bower": "^1.3.11",
+    "yo": "^1.2.1",
+    "generator-karma": "^0.8.3",
+    "generator-angular": "^0.9.8"
+  }
+}
