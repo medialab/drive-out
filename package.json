@@ -1,7 +1,7 @@
 {
   "name": "drive-out",
-  "version": "0.0.0",
-  "description": "api and samples to download contents from google drive in a JSON fashion",
+  "version": "0.0.1",
+  "description": "api and helpers to help you download contents from google drive in a JSON fashion",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
