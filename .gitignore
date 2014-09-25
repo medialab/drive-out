@@ -1,0 +1,10 @@
+secrets.json
+settings.js
+
+*.log
+
+*.DS_Store
+node_modules
+
+# sublime files
+sublime.sublime*
