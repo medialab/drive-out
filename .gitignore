@@ -8,3 +8,11 @@ node_modules
 
 # sublime files
 sublime.sublime*
+
+
+dist
+.tmp
+.sass-cache
+bower_components
+
+drive-out/contents
