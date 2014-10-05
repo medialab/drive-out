@@ -1,0 +1,22 @@
+[
+  {
+    "title": "projects",
+    "slug": "projects",
+    "type": "folder"
+  },
+  {
+    "title": "bibliography",
+    "slug": "bibliography",
+    "type": "folder"
+  },
+  {
+    "title": "teaching",
+    "slug": "teaching",
+    "type": "folder"
+  },
+  {
+    "title": "test",
+    "slug": "test",
+    "type": "document"
+  }
+]

@@ -1,0 +1,24 @@
+{{items}}
+<div ng-repeat="item in items" ng-switch="item.mimeType">
+  <div ng-switch-when="application/vnd.google-apps.document">
+
+    <div class="container">
+      <h1>{{item.title}}</h1>
+      <h2>{{item.subtitle}}</h2>
+    </div>
+    <section ng-repeat="section in item.sections" ng-if="item.sections">  
+      <div ng-switch="section.type">
+        <div ng-switch-when="image">
+          <img ng-src="{{section.src}}" style="max-width: 100%; margin: 40px 0">
+        </div>
+        <div ng-switch-default class="container" ng-bind-html="section.html">
+        </div>
+      </div>
+    </section>
+    <section ng-if='!item.sections' ng-bind-html="item.html">
+
+  </div>
+  <div ng-switch-when="image/jpeg">
+    <img src="">
+  </div>
+</div>
