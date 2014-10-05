@@ -207,20 +207,31 @@ drive.iterators.flatten = function(file, options, results) {
         body = html.match(/<body[^>]*>(.*?)<\/body>/i)[1],
         $ = cheerio.load(body);
 
-    result.title = $('.title').text();
+    result.title = $('.title').text() || file.title;
     result.subtitle = $('.subtitle').text();
     result.html = drive.utils.clean(body);
     result.type = 'document';
   }
 
+  if(file.mimeType == 'image/jpeg') {
+    
+    drive.files.download({
+      downloadUrl: file.downloadUrl,
+      filepath: options.mediapath + '/' + file.id + file.fileExtension
+    })
+    result.type = 'image';
+    result.src = file.id + file.fileExtension;
+    result.bounds = file.imageMediaMetadata // : { width: 930, height: 561 } }
+  }
+
   if(result.slug.indexOf('-metadata')!= -1) {
     result.type = "metadata";
-    result.target = file.title.replace('-metadata', '');
+    result.target = result.slug.replace('-metadata', '');
   }
 
   if(file.mimeType == 'application/vnd.google-apps.folder') {
     result.type = 'folder';
-    result.items = drive.files.walk({fileId: file.id}, drive.iterators.flatten);
+    result.items = drive.files.walk(extend(options,{fileId: file.id}), drive.iterators.flatten);
   }
 
   return result;
@@ -282,7 +293,7 @@ drive.files.list = function(options) {
 
 drive.files.getHtml = function(options) {
   if(!options || !options.fileId)
-    throw 'files.list interrupted: please specify a "fileId" field ...';
+    throw 'files.getHtml interrupted: please specify a "fileId" field ...';
   
   var f = options.format || 'html'; // format can either be html or txt
   console.log('         ',colors.cyan('get '+f), 'of', options.fileId);
@@ -295,6 +306,28 @@ drive.files.getHtml = function(options) {
   });
   return response.body;
 }
+
+
+/*
+  Download asyncrh the url specified in options.url to options.filepath. 
+  Use only with downloadUrl fields.
+  @return Promise
+*/
+drive.files.download =function(options) {
+  if(!options || !options.downloadUrl || !options.filepath)
+    throw 'files.download interrupted: please specify a "fileId" field AND a "filepath" field...';
+  console.log('         ',colors.cyan('download'), 'to', options.filepath);
+
+  var ws = fs.createWriteStream(options.filepath);
+  ws.on('error', function(err) { console.log(err); throw 'aaaaa'});
+  
+  request({
+    url: options.downloadUrl,
+    headers: {
+      'Authorization' : 'Bearer ' + secrets.access_token
+    }
+  }).pipe(ws) // save image
+};
 
 
 /*

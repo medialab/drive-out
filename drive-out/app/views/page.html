@@ -1,4 +1,5 @@
 <p>{{page.subtitle}}</p>
+{{item}}
 <div class="container">
   <article ng-repeat="item in items" ng-switch="item.type">
     
@@ -18,8 +19,10 @@
       <section ng-if='!item.sections' ng-bind-html="item.html">
 
     </div>
-    <div ng-switch-when="image/jpeg">
-      <img src="">
+    <div ng-switch-when="image" class="media">
+      <img ng-src="media/{{item.src}}" style="width: 100%">
+      <p class="title" ng-bind-html="item.metadata.title"></p>
+      <p class="description" ng-bind-html="item.metadata.subtitle"></p>
     </div>
 
   </article>

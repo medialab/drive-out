@@ -61,6 +61,25 @@ article {
   padding: 2px 7px 1px 7px;
 }
 
+article .media{
+  background: #faf7ee;
+  margin: 18px 0;
+}
+
+article .media .title{
+  margin: 10px 20px 0 20px;
+  font-weight: 700;
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  text-transform: uppercase;
+  color:#761c00;
+}
+
+article .media .description{
+  margin: 0 20px 10px 20px;
+  font-style: italic;
+}
+
 
 a{
   color: #f67954;

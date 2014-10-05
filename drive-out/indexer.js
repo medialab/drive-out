@@ -5,11 +5,13 @@
   settings fil have to be in the same level.
 */
 var settings = require('./settings'),
-    drive = require('../drive-api')(settings),
+    extend   = require('util')._extend,
+    drive    = require('../drive-api')(settings),
 
-    fs = require('fs'),
+    fs       = require('fs'),
 
-    CONTENTS_PATH = './app/contents';
+    MEDIA_PATH = '/Users/daniele/Tools/drive-out/drive-out/app/media',
+    CONTENTS_PATH    = './app/contents';
 
 
 drive.start().then(function logic() {
@@ -21,12 +23,12 @@ drive.start().then(function logic() {
   console.log('folder url:', "https://drive.google.com/a/sciencespo.fr/folderview?id=0ByZTyEnzm9qqdVkwUWtqa2k1MFU&usp=sharing");
   console.log('folder id: ', fileId);
 
-  var files = drive.files.walk({fileId: fileId}, drive.iterators.flatten);
+  var files = drive.files.walk({fileId: fileId, mediapath: MEDIA_PATH}, drive.iterators.flatten);
 
   // todo: cycle through files to discover hidden metadata
 
   // create contents directory if it does not exist
-  fs.existsSync(CONTENTS_PATH) || fs.mkdirSync(CONTENTS_PATH);
+  fs.existsSync(MEDIA_PATH) || fs.mkdirSync(MEDIA_PATH);
 
   // recursive save files data
   
@@ -45,10 +47,21 @@ drive.start().then(function logic() {
         }
         results.push(clone); 
         save_recursively(items[i].items, path + "/" + items[i].slug);
-      } else {
+      } else if(!items[i].target){
         results.push(items[i]);
       }
+      
     };
+
+    for(var i in results) {
+      for(var j in items) {
+        if(results[i].slug == items[j].target){
+          results[i].metadata = extend({},items[j]);
+          break;
+        }
+      }
+    }
+
     // save index here.
     drive.utils.write(path + '/index.json', JSON.stringify(results,null,2)); 
   };
