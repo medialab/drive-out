@@ -10,6 +10,7 @@ var extend   = require('util')._extend,
     request_sync  = require('request-sync'),
     
     google   = require('googleapis'),
+    cheerio = require('cheerio'),
 
     settings, // cfr module.exports function
     secrets, // the content of SECRETS_PATH .json file
@@ -68,6 +69,28 @@ drive.utils.write = function(filepath, contents) {
 
 
 
+/*
+  Clean html from sapn and style attributes
+  @return cleaned text
+*/
+drive.utils.clean = function(html){
+  if(!html) return html;
+
+  var c = html
+            .replace(/<sup(.*?)href="#cmnt(.*?)<\/sup>/g, '')
+            .replace(/<div(.*?)href="#cmnt(.*?)<\/div>/g, '') // avoid comment in text
+            .replace(/<span(.*?)>/g,'')
+            .replace(/<\/span(.*?)>/g,'')
+            .replace(/name="(.*?)"/g,'')
+            .replace(/style="(.*?)"/g,'')
+            .replace(/class="(.*?)"/g,'')
+            .replace(/<table(.*?)>/g, function(d, attrs){ return '<table class="table" ' + attrs + '>';})
+            .replace(/<a><\/a>/g,'')
+            .replace(/<p\s+><\/p>/g,'')
+            .replace(/<p\s+>/g,'<p>');
+  return c;
+}
+
 
 
 
@@ -94,9 +117,12 @@ drive.start = function() {
       return resolve();
     }
 
-    if(fs.existsSync(settings.SECRETS_PATH))
+    if(fs.existsSync(settings.SECRETS_PATH)){
+      console.log('secrest file found')
       return flush();
 
+    }
+      
     var readline = require('readline'),
         
         rl = readline.createInterface({
@@ -163,21 +189,69 @@ drive.iterators.basic = function(file) {
 };
 
 
-
+/*
+  This special iterator download the content of googleDdocuments
+*/
 drive.iterators.flatten = function(file, options, results) {
   console.log('drive.iterators.basic', file.title);
   
   var result = {
     id: file.id,
     title: file.title,
+    slug: drive.utils.slugify(file.title),
     mimeType: file.mimeType
   };
+ 
+  if(file.mimeType == 'application/vnd.google-apps.document') {
+    var html = drive.files.getHtml({fileId:file.id}),
+        body = html.match(/<body[^>]*>(.*?)<\/body>/i)[1],
+        $ = cheerio.load(body);
 
-  if(file.mimeType == 'application/vnd.google-apps.folder')
+    result.title = $('.title').text();
+    result.subtitle = $('.subtitle').text();
+    result.html = drive.utils.clean(body);
+    result.type = 'document';
+  }
+
+  if(result.slug.indexOf('-metadata')!= -1) {
+    result.type = "metadata";
+    result.target = file.title.replace('-metadata', '');
+  }
+
+  if(file.mimeType == 'application/vnd.google-apps.folder') {
+    result.type = 'folder';
     result.items = drive.files.walk({fileId: file.id}, drive.iterators.flatten);
+  }
 
   return result;
 };
+
+
+
+/*
+  Pseudo-api modules (sync, not async!) meant for drivein specific usage. They do not require Oauth, but the google folder should be publibly available
+  ===
+*/
+drive.open = {};
+drive.open.files = {};
+
+
+drive.open.files.get = function(options) {
+  
+
+};
+
+/*
+  get html contents
+*/
+drive.open.files.getHtml = function(options) {
+  
+};
+
+drive.open.files.list = function(options) {
+  
+};
+
 
 
 /*
@@ -206,6 +280,22 @@ drive.files.list = function(options) {
 };
 
 
+drive.files.getHtml = function(options) {
+  if(!options || !options.fileId)
+    throw 'files.list interrupted: please specify a "fileId" field ...';
+  
+  var f = options.format || 'html'; // format can either be html or txt
+  console.log('         ',colors.cyan('get '+f), 'of', options.fileId);
+  var response = request_sync({
+    url: 'https://docs.google.com/feeds/download/documents/export/Export?id='+options.fileId+'&exportFormat=' + f,
+    method: 'GET',
+    headers: {
+      'Authorization' : 'Bearer ' + secrets.access_token
+    }
+  });
+  return response.body;
+}
+
 
 /*
   Recursively look for items in files.list. Then apply iterator function on each item.
@@ -221,6 +311,16 @@ drive.files.walk = function(options, iterator){
   console.log('walking')
   var files = drive.files.list({fileId: options.fileId}),
       results = [];
+
+  // sort files here by function, @todo
+  files.items.sort(function(a, b) {
+    if (a.title > b.title)
+      return 1;
+    if (a.title < b.title)
+      return -1;
+    // a doit être égale à b
+    return 0;
+  })
 
   for(var i=0; i<files.items.length; i++) {
     var file = iterator(files.items[i], options, results); // if iterator function return null or undefined
