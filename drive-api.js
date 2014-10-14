@@ -47,7 +47,8 @@ drive.utils.getFileId = function(url) {
   try {
     fileId = url.match(/id=(.*?)&/)[1]
   } catch(err) {
-    throw 'unable to find fileId form the given url' + url
+    console.log(err);
+    throw 'drive.utils.getFileId failed. Unable to find fileId form the given url: ' + url
   }
   return fileId
 };
@@ -100,12 +101,15 @@ drive.utils.clean = function(html){
   Core function, return a promise.
 */
 drive.start = function() {
+  console.log("       __     _                              __ \n  ____/ /____(_)   _____        ____  __  __/ /_\n / __  / ___/ / | / / _ \\______/ __ \\/ / / / __/\n/ /_/ / /  / /| |/ /  __/_____/ /_/ / /_/ / /_  \n\\__,_/_/  /_/ |___/\\___/      \\____/\\__,_/\\__/  \n");
+
   return new Promise(function (resolve, reject) {
     var oauth2Client = new google.auth.OAuth2(settings.CLIENT_ID, settings.CLIENT_SECRET, settings.REDIRECT_URL);
 
     var flush = function() {
       secrets = require(settings.SECRETS_PATH);
       oauth2Client.setCredentials(secrets);
+      
 
       console.log('date this token will expire:', colors.inverse(new Date(secrets.expiry_date)));
       console.log();
@@ -118,7 +122,7 @@ drive.start = function() {
     }
 
     if(fs.existsSync(settings.SECRETS_PATH)){
-      console.log('secrest file found')
+      console.log('secrets file found in ' + settings.SECRETS_PATH)
       return flush();
 
     }
@@ -135,8 +139,9 @@ drive.start = function() {
           scope: settings.SCOPES // can be a space-delimited string or an array of scopes
         });
 
+
     console.log('Please visit the', colors.bold('following url'), 'and authenticate with your', colors.cyan('google drive'),'credentials: ');
-    console.log(colors.inverse.underline(url));
+    console.log(url);
 
     rl.question('Enter the code here:', function(code) {
       console.log('Thanks!\nCode:',colors.green(code));
@@ -147,8 +152,9 @@ drive.start = function() {
 
         console.log('gettin\' token from code', tokens);
         secrets = tokens;
+        
+        drive.utils.write(settings.SECRETS_PATH, JSON.stringify(tokens));
 
-        drive.utils.write(secrets.SECRETS_PATH, JSON.stringify(tokens));
         drive = google.drive({ version: 'v2', auth: oauth2Client });
         return flush();
       });
@@ -193,7 +199,7 @@ drive.iterators.basic = function(file) {
   This special iterator download the content of googleDdocuments
 */
 drive.iterators.flatten = function(file, options, results) {
-  console.log('drive.iterators.basic', file.title);
+  console.log('drive.iterators.flatten', file.title, file.id);
   
   var result = {
     id: file.id,
@@ -213,14 +219,15 @@ drive.iterators.flatten = function(file, options, results) {
     result.type = 'document';
   }
 
-  if(file.mimeType == 'image/jpeg') {
-    
+  if(file.mimeType == 'image/jpeg' || file.mimeType == 'image/png') {
     drive.files.download({
       downloadUrl: file.downloadUrl,
-      filepath: options.mediapath + '/' + file.id + file.fileExtension
+      filepath: options.mediapath + '/' + file.id + '.' + file.fileExtension
     })
+
+
     result.type = 'image';
-    result.src = file.id + file.fileExtension;
+    result.src = file.id + '.' + file.fileExtension;
     result.bounds = file.imageMediaMetadata // : { width: 930, height: 561 } }
   }
 
@@ -319,7 +326,7 @@ drive.files.download =function(options) {
   console.log('         ',colors.cyan('download'), 'to', options.filepath);
 
   var ws = fs.createWriteStream(options.filepath);
-  ws.on('error', function(err) { console.log(err); throw 'aaaaa'});
+  ws.on('error', function(err) { console.log(err); throw 'options filepath ' + options.filepath});
   
   request({
     url: options.downloadUrl,

@@ -1,3 +1,9 @@
+node_modules
+dist
+.tmp
+.sass-cache
+bower_components
+
 secrets.json
 settings.js
 
@@ -8,6 +14,7 @@ node_modules
 
 # sublime files
 sublime.sublime*
+sublime
 
 
 dist
@@ -15,6 +22,6 @@ dist
 .sass-cache
 bower_components
 
-contents
-media
-data
+app/contents
+app/media
+app/data
