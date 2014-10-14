@@ -9,42 +9,56 @@ Remember to check the google drive api credentials, the application name, email 
 
 1. Installation
 ---
-Driveout needs [node](http://nodejs.org/) already installed, [bower](http://bower.io/#install-bower) and [grunt-cli](http://gruntjs.com/getting-started) as well. Open your terminal and type:
+Driveout needs [node](http://nodejs.org/) because it uses [bower](http://bower.io/#install-bower) and [grunt-cli](http://gruntjs.com/getting-started) as well. Open your terminal and type:
 	
 	npm install -g bower
 	npm install -g grunt
 	
-Once git-cloned, install the dependencies required by drive_api.js
+Git-cloned (e.g under `~~/`) and install the dependencies required by drive_api.js:
 
 	cd ~~/drive-out
 	npm install
-
-Then install the requirements for the website viewer:
-	
-	cd ~~/drive-out/website
-	cp settings.example.js settings.js
-	npm install
 	bower install
+	
+	
 
-Edit the `settings.js` file 
+Copy the `settings.js` file
+
+	cp settings.js.example settings.js
 
 1. Get the data ...
 ---
 
 Now comes the tricky part.
-First of all, get the [sharing link](https://support.google.com/drive/answer/2494822?hl=en) for the google drive folder you want to drive-out, something like `https://drive.google.com/folderview?id=XXXXXXXXXXX&usp=sharing`
+First of all, get the [sharing link](https://support.google.com/drive/answer/2494822?hl=en) for the google drive folder you want to drive-out, something like `https://drive.google.com/folderview?id=XXXXXXXXXXX&usp=sharing`.
+Fill the `settings.js` file carefully. Almost all those lines are mandatory:
 
-	cd ~~/drive-out/website
-	node indexer.js
-	
-Copy and paste the link in the same browser to follow asked for a code
+	settings.CLIENT_ID = 'YOUR GOOGLE CLIENT ID.apps.googleusercontent.com';
+	settings.CLIENT_SECRET = 'YOUR GOOGLE CLIENT SECRET';
+	settings.REDIRECT_URL = 'YOUR GOOGLE REDIRECT_URL';
+	settings.DRIVE_FOLDER_URL = 'https://drive.google.com/folderview?id=XXXXXXXXXXX&usp=sharing';
+
+Drive_out will store your oauth2 token under a file named `secrets.json`. Feel free to change the file location, but try to use an absolute path.
+
+	settings.SECRETS_PATH = './secrets.json';
+
+Then get the data from your google drive folder:
+
+	npm start
+
+copy the link after this line and paste to your browser address bar
+
+	Please visit the following url and authenticate with your google drive credentials: 
+
+Normally you will be asked for your google credential and should receive a code as answer. Copy and paste the code into the terminal :
+
+	Enter the code here:
 
 
 1. ... and run
 ---
 And finally run the grunt serve to host the website:
 	
-	cd ~~/drive-out/website
 	grunt serve
 	
 	
