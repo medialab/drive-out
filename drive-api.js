@@ -136,7 +136,8 @@ drive.start = function() {
         });
 
     console.log('Please visit the', colors.bold('following ur'), 'and authenticate with your', colors.cyan('google drive'),'credentials: ');
-    console.log(colors.inverse.underline(url));
+    // console.log(colors.inverse.underline(url));
+    console.log(url);
 
     rl.question('Enter the code here:', function(code) {
       console.log('Thanks!\nCode:',colors.green(code));
@@ -148,7 +149,7 @@ drive.start = function() {
         console.log('gettin\' token from code', tokens);
         secrets = tokens;
 
-        drive.utils.write('./secrets.json', JSON.stringify(tokens));
+        drive.utils.write(settings.SECRETS_PATH, JSON.stringify(tokens));
         drive = google.drive({ version: 'v2', auth: oauth2Client });
         return flush();
       });
@@ -193,7 +194,7 @@ drive.iterators.basic = function(file) {
   This special iterator download the content of googleDdocuments
 */
 drive.iterators.flatten = function(file, options, results) {
-  console.log('drive.iterators.basic', file.title);
+  console.log('drive.iterators.flatten', file.title, file.id);
   
   var result = {
     id: file.id,
@@ -213,14 +214,15 @@ drive.iterators.flatten = function(file, options, results) {
     result.type = 'document';
   }
 
-  if(file.mimeType == 'image/jpeg') {
-    
+  if(file.mimeType == 'image/jpeg' || file.mimeType == 'image/png') {
     drive.files.download({
       downloadUrl: file.downloadUrl,
-      filepath: options.mediapath + '/' + file.id + file.fileExtension
+      filepath: options.mediapath + '/' + file.id + '.' + file.fileExtension
     })
+
+
     result.type = 'image';
-    result.src = file.id + file.fileExtension;
+    result.src = file.id + '.' + file.fileExtension;
     result.bounds = file.imageMediaMetadata // : { width: 930, height: 561 } }
   }
 
@@ -319,7 +321,7 @@ drive.files.download =function(options) {
   console.log('         ',colors.cyan('download'), 'to', options.filepath);
 
   var ws = fs.createWriteStream(options.filepath);
-  ws.on('error', function(err) { console.log(err); throw 'aaaaa'});
+  ws.on('error', function(err) { console.log(err); throw 'options filepath ' + options.filepath});
   
   request({
     url: options.downloadUrl,

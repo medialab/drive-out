@@ -10,17 +10,17 @@ var settings = require('./settings'),
 
     fs       = require('fs'),
 
-    MEDIA_PATH = '/Users/daniele/Tools/drive-out/drive-out/app/media',
+    MEDIA_PATH = './app/media',
     CONTENTS_PATH    = './app/contents';
 
 
 drive.start().then(function logic() {
   console.log('custom indexer of drive-out');
 
-  var fileId = drive.utils.getFileId("https://drive.google.com/a/sciencespo.fr/folderview?id=0ByZTyEnzm9qqdVkwUWtqa2k1MFU&usp=sharing");
+  var fileId = drive.utils.getFileId(settings.DRIVE_FOLDER_URL);
   
   console.log();
-  console.log('folder url:', "https://drive.google.com/a/sciencespo.fr/folderview?id=0ByZTyEnzm9qqdVkwUWtqa2k1MFU&usp=sharing");
+  console.log('folder url:', settings.DRIVE_FOLDER_URL);
   console.log('folder id: ', fileId);
 
   var files = drive.files.walk({fileId: fileId, mediapath: MEDIA_PATH}, drive.iterators.flatten);
