@@ -15,7 +15,8 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'perfect_scrollbar'
   ])
   .config(function ($routeProvider) {
     $routeProvider

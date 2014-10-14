@@ -135,7 +135,7 @@ drive.start = function() {
           scope: settings.SCOPES // can be a space-delimited string or an array of scopes
         });
 
-    console.log('Please visit the', colors.bold('following ur'), 'and authenticate with your', colors.cyan('google drive'),'credentials: ');
+    console.log('Please visit the', colors.bold('following url'), 'and authenticate with your', colors.cyan('google drive'),'credentials: ');
     console.log(colors.inverse.underline(url));
 
     rl.question('Enter the code here:', function(code) {
@@ -148,7 +148,7 @@ drive.start = function() {
         console.log('gettin\' token from code', tokens);
         secrets = tokens;
 
-        drive.utils.write('./secrets.json', JSON.stringify(tokens));
+        drive.utils.write(secrets.SECRETS_PATH, JSON.stringify(tokens));
         drive = google.drive({ version: 'v2', auth: oauth2Client });
         return flush();
       });

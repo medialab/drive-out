@@ -1,12 +1,22 @@
 /* Space out content a bit */
+html{
+  height: 100%;
+  padding:0;
+  margin:0;
+}
 body {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding:0;
+  margin:0;
   background-color: #fff;/*#faf7ee;*/
   color: #173340;
   font-family: 'Crimson Text', serif;
   font-size: 20px;
   line-height: 28px;
+  height: 100%;
+}
+
+#layout{
+  
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */

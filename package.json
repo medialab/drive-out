@@ -19,7 +19,8 @@
     "cli-color": "^0.3.2",
     "request": "^2.44.0",
     "googleapis": "^1.0.14",
-    "request-sync": "0.0.5"
+    "request-sync": "0.0.5",
+    "cheerio": "^0.17.0"
   },
   "devDependencies": {
     "grunt-cli": "^0.1.13",
