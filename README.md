@@ -73,11 +73,14 @@ Normally you will be asked for your google credential and should receive a code 
 
 	Enter the code here:
 
+and wait for the indexer to finish its job.
+As you may see, two folder have been created at this point unde ~~/drive-out/app: __contents__ and __media__.
+`Contents` will store your google drive folder googledocs contents in `index.json` file, while `media` directory will store the downloaded file. Please cfr [index.js](https://github.com/medialab/drive-out/blob/master/index.js) file to understand how drive-out exports the files, and modify according to your needs.
 
 
 4. ... and run
 ---
-And finally run the grunt serve to host the website:
+Run the grunt server to check that everything is in place:
 	
 	grunt serve
 
