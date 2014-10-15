@@ -23,12 +23,15 @@ drive.start().then(function logic() {
   console.log('folder url:', settings.DRIVE_FOLDER_URL);
   console.log('folder id: ', fileId);
 
+  fs.existsSync(MEDIA_PATH) || fs.mkdirSync(MEDIA_PATH);
+  fs.existsSync(CONTENTS_PATH) || fs.mkdirSync(CONTENTS_PATH);
+
   var files = drive.files.walk({fileId: fileId, mediapath: MEDIA_PATH}, drive.iterators.flatten);
 
   // todo: cycle through files to discover hidden metadata
 
   // create contents directory if it does not exist
-  fs.existsSync(MEDIA_PATH) || fs.mkdirSync(MEDIA_PATH);
+  
 
   // recursive save files data
   

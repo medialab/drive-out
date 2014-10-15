@@ -326,7 +326,11 @@ drive.files.download =function(options) {
   console.log('         ',colors.cyan('download'), 'to', options.filepath);
 
   var ws = fs.createWriteStream(options.filepath);
-  ws.on('error', function(err) { console.log(err); throw 'options filepath ' + options.filepath});
+  ws.on('error', function(err) {
+    console.log(err);
+    console.log(colors.red('cannot write at options.filepath'), colors.inverse(options.filepath));
+    throw 'error on writing file';
+  });
   
   request({
     url: options.downloadUrl,
