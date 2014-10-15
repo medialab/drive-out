@@ -274,6 +274,7 @@ module.exports = function (grunt) {
       }
     },
 
+
     // ng-annotate tries to make the code safe for minification automatically
     // by using the Angular long form for dependency injection.
     ngAnnotate: {
@@ -327,6 +328,18 @@ module.exports = function (grunt) {
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
+      },
+      contents: {
+        expand: true,
+        cwd: '<%= yeoman.app %>/contents',
+        dest: '<%= yeoman.dist %>/contents',
+        src: '{,*/}*.json'
+      },
+      media: {
+        expand: true,
+        cwd: '<%= yeoman.app %>/media',
+        dest: '<%= yeoman.dist %>/media',
+        src: '{,*/}*'
       }
     },
 
@@ -340,6 +353,8 @@ module.exports = function (grunt) {
       ],
       dist: [
         'copy:styles',
+        'copy:contents',
+        'copy:media',
         'imagemin',
         'svgmin'
       ]
