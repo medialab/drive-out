@@ -21,7 +21,7 @@ Remember to double check the google drive api credentials, the application name,
 
 
 
-1. Installation
+2. Installation
 ---
 Driveout needs [node](http://nodejs.org/) because it uses [bower](http://bower.io/#install-bower) and [grunt-cli](http://gruntjs.com/getting-started) as well. Open your terminal and type:
 	
@@ -42,7 +42,7 @@ Copy the `settings.js` file
 
 
 
-1. Get the data ...
+3. Get the data ...
 ---
 
 Now comes the __tricky part__.
@@ -75,10 +75,17 @@ Normally you will be asked for your google credential and should receive a code 
 
 
 
-1. ... and run
+4. ... and run
 ---
 And finally run the grunt serve to host the website:
 	
 	grunt serve
+
+or 
+	
+	grunt build
+
+and copy the dist path to your server root.
+
 	
 	
