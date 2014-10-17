@@ -348,14 +348,17 @@ drive.files.download =function(options) {
 */
 drive.files.walk = function(options, iterator){
   if(!options || !options.fileId)
-    throw 'files.flatten interrupted: please specify a "fileId" field ...';
+    throw 'drive.files.walk interrupted: please specify a "options.fileId" field ...';
 
   if(typeof iterator != 'function')
     iterator = drive.iterators.basic;
-  console.log('walking')
+  console.log('drive.files.walk ...');
   var files = drive.files.list({fileId: options.fileId}),
       results = [];
-
+  
+  if(!files.items)
+    return results;
+  
   // sort files here by function, @todo
   files.items.sort(function(a, b) {
     if (a.title > b.title)
