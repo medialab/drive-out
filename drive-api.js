@@ -110,16 +110,29 @@ drive.start = function() {
       secrets = require(settings.SECRETS_PATH);
       oauth2Client.setCredentials(secrets);
       
+      var expiry_date = new Date(secrets.expiry_date);
 
       console.log('date this token will expire:', colors.inverse(new Date(secrets.expiry_date)));
       console.log();
       console.log();
-      //drive = google.drive({ version: 'v2', auth: oauth2Client });
-      ///exports.drive = drive; // the original drive api;
-      // test dummy drive if everything works
-      // check for expiry, then resolve automatically. Handle the case the user has blocked the auth...
-      return resolve();
-    }
+
+      if((new Date()).getTime() - expiry_date.getTime() > 0) { // that is10 min to expiry
+        return new Promise(function (_resolve, _reject) { // return a return ... mah
+          oauth2Client.refreshAccessToken(function(err, tokens) {
+            if(err)
+              return reject(err);
+            console.log(colors.inverse('expired, refreshing'))
+            console.log(tokens);
+            drive.utils.write(settings.SECRETS_PATH, JSON.stringify(tokens));
+            return resolve();
+          // your access_token is now refreshed and stored in oauth2Client
+          // store these new tokens in a safe place (e.g. database)
+          });
+        })
+      } else {
+        return resolve(); 
+      }
+    };
 
     if(fs.existsSync(settings.SECRETS_PATH)){
       console.log('secrets file found in ' + settings.SECRETS_PATH)
