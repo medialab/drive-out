@@ -116,7 +116,7 @@ drive.start = function() {
       console.log();
       console.log();
 
-      if((new Date()).getTime() - expiry_date.getTime() > 0) { // that is10 min to expiry
+      if((new Date()).getTime() - expiry_date.getTime() < 0) { // that is10 min to expiry
         return new Promise(function (_resolve, _reject) { // return a return ... mah
           oauth2Client.refreshAccessToken(function(err, tokens) {
             if(err)
