@@ -99,6 +99,7 @@ drive.utils.clean = function(html){
   function start
   ---
   Core function, return a promise.
+  It handle token refreshing and write secrets received in th fiel specified via settings
 */
 drive.start = function() {
   console.log("       __     _                              __ \n  ____/ /____(_)   _____        ____  __  __/ /_\n / __  / ___/ / | / / _ \\______/ __ \\/ / / / __/\n/ /_/ / /  / /| |/ /  __/_____/ /_/ / /_/ / /_  \n\\__,_/_/  /_/ |___/\\___/      \\____/\\__,_/\\__/  \n");
@@ -137,8 +138,7 @@ drive.start = function() {
     if(fs.existsSync(settings.SECRETS_PATH)){
       console.log('secrets file found in ' + settings.SECRETS_PATH)
       return flush();
-
-    }
+    };
       
     var readline = require('readline'),
         
