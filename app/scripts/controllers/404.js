@@ -8,10 +8,6 @@
  * Controller of the driveoutApp
  */
 angular.module('driveoutApp')
-  .controller('404Ctrl', function ($scope) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+  .controller('404Ctrl', function ($scope, $log) {
+    $log.error('404Ctrl ready');
   });

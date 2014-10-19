@@ -14,5 +14,6 @@ angular.module('driveoutApp')
     $scope.$watch('routes', function(){
       $log.info('routes loaded');
       $scope.items = $scope.routes;
+      $scope.$parent.folders = [];
     })
   });

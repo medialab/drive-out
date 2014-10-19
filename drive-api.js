@@ -71,7 +71,7 @@ drive.utils.write = function(filepath, contents) {
 
 
 /*
-  Clean html from sapn and style attributes
+  Clean html from sapn and style attributes. clean title and subtitle.
   @return cleaned text
 */
 drive.utils.clean = function(html){
@@ -117,7 +117,7 @@ drive.start = function() {
       console.log();
       console.log();
 
-      if((new Date()).getTime() - expiry_date.getTime() < 0) { // that is10 min to expiry
+      if((new Date()).getTime() - expiry_date.getTime() > 60000) { // that is10 min to expiry
         return new Promise(function (_resolve, _reject) { // return a return ... mah
           oauth2Client.refreshAccessToken(function(err, tokens) {
             if(err)
@@ -226,9 +226,14 @@ drive.iterators.flatten = function(file, options, results) {
         body = html.match(/<body[^>]*>(.*?)<\/body>/i)[1],
         $ = cheerio.load(body);
 
-    result.title = $('.title').text() || file.title;
-    result.subtitle = $('.subtitle').text();
-    result.html = drive.utils.clean(body);
+    result.title = $('.title').html() || file.title;
+    result.subtitle = $('.subtitle').html();
+    
+    // clean first title and first subtitle
+    $('.title').first().text('');
+    $('.subtitle').first().text('')
+
+    result.html = drive.utils.clean($.html());
     result.type = 'document';
   }
 

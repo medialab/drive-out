@@ -7,7 +7,7 @@ html{
 body {
   padding:0;
   margin:0;
-  background-color: #faf7ee;
+  background-color: #fff;
   color: #173340;
   font-family: 'Crimson Text', serif;
   font-size: 20px;
@@ -28,11 +28,16 @@ body {
 }
 
 /* Custom page header */
-.header ul {
+.header{
   padding: 40px 0;
 }
-
-.header ul li {
+.header ul {
+  padding: 0;
+}
+ul.nav{
+  margin-left: 105px;
+}
+.header ul li, ul.nav li {
   display: inline-block;
   list-style-type: none;
   margin: 0px 5px;
@@ -44,19 +49,27 @@ body {
 }
 
 .header ul li.logo {
+  width: 80px;
   margin: 0 20px 0 0;
   font-weight: 700;
   color: #761c00;
 }
-.header ul li.active {
+.header ul li.active, ul.nav li.active {
   background-color: #a9dde1;
 }
 
-.header ul li.active a {
+.header ul li.active a, ul.nav li.active a {
   color: #173340;
-
+  background-color: none;
 }
 
+ul.nav li a{
+  color: #173340;
+  padding: 0;
+}
+ul.nav li a:hover{
+  background-color: transparent; 
+}
 /* Make the masthead heading the same height as the navigation */
 .header h3 {
   

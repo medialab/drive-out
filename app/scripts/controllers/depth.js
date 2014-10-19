@@ -2,23 +2,21 @@
 
 /**
  * @ngdoc function
- * @name driveoutApp.controller:PageCtrl
+ * @name driveoutApp.controller:DepthCtrl
  * @description
- * # PageCtrl
+ * # DepthCtrl
  * Controller of the driveoutApp
  */
 angular.module('driveoutApp')
-  .controller('PageCtrl', function ($scope, items, $log, $routeParams) {
+  .controller('DepthCtrl', function ($scope, items, parents, $log, $routeParams) {
     $scope.items = items.data;
-    
-    $scope.$parent.folders = angular.copy($scope.items).filter(function(d) {
+    $scope.$parent.folders = angular.copy(parents.data).filter(function(d) {
       if(d.type=='folder')
         return d;
     });
 
     // filter stuffs
     $scope.$watch('routes', function(){ // get title
-      console.log( angular.copy($scope.routes))
       $scope.$parent.page = angular.copy($scope.routes)
         .filter(function(d){ return d.slug==$routeParams.page })
         .pop();

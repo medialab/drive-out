@@ -1,11 +1,12 @@
 <p>{{page.subtitle}}</p>
-{{item}}
 <div class="container">
+  
+
   <article ng-repeat="item in items" ng-switch="item.type">
     
     <div ng-switch-when="document">
-        <h1>{{item.title||'untitled'}}</h1>
-        <h2>{{item.subtitle}}</h2>
+        <h1 ng-bind-html="item.title"></h1>
+        <h2 ng-bind-html="item.subtitle"></h2>
       
       <section ng-repeat="section in item.sections" ng-if="item.sections">  
         <div ng-switch="section.type">
