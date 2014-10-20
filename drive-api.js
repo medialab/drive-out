@@ -14,7 +14,9 @@ var extend   = require('util')._extend,
 
     settings, // cfr module.exports function
     secrets, // the content of SECRETS_PATH .json file
-    drive = {};
+    
+    drive = {},
+    google_drive = {};
 
 
 
@@ -114,29 +116,31 @@ drive.start = function() {
       var expiry_date = new Date(secrets.expiry_date);
 
       console.log('date this token will expire:', colors.inverse(new Date(secrets.expiry_date)));
-      console.log();
-      console.log();
+      
 
       if((new Date()).getTime() - expiry_date.getTime() > 60000) { // that is10 min to expiry
+        console.log(colors.bold('token expired...'));
         return new Promise(function (_resolve, _reject) { // return a return ... mah
           oauth2Client.refreshAccessToken(function(err, tokens) {
             if(err)
               return reject(err);
-            console.log(colors.inverse('expired, refreshing'))
-            console.log(tokens);
             drive.utils.write(settings.SECRETS_PATH, JSON.stringify(tokens));
+            
+            console.log('date this *new* token will expire:', colors.inverse(new Date(secrets.expiry_date)));
+            secrets = tokens;
+            console.log('\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n');
+            
             return resolve();
-          // your access_token is now refreshed and stored in oauth2Client
-          // store these new tokens in a safe place (e.g. database)
           });
         })
       } else {
+        console.log('\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n');
         return resolve(); 
       }
     };
 
     if(fs.existsSync(settings.SECRETS_PATH)){
-      console.log('secrets file found in ' + settings.SECRETS_PATH)
+      console.log('secrets file found in ', colors.inverse(settings.SECRETS_PATH));
       return flush();
     };
       
@@ -164,11 +168,8 @@ drive.start = function() {
         rl.close()
 
         console.log('gettin\' token from code', tokens);
-        secrets = tokens;
-        
         drive.utils.write(settings.SECRETS_PATH, JSON.stringify(tokens));
-
-        drive = google.drive({ version: 'v2', auth: oauth2Client });
+        google_drive = google.drive({ version: 'v2', auth: oauth2Client });
         return flush();
       });
     });
