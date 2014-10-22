@@ -26,7 +26,7 @@ Remember to doublecheck the google drive api credentials, the application name, 
 Driveout needs [node library](http://nodejs.org/) because it uses [bower](http://bower.io/#install-bower) and [grunt-cli](http://gruntjs.com/getting-started) as well. Open your terminal and type:
 	
 	npm install -g bower
-	npm install -g grunt
+	npm install -g grunt-cli
 	
 Git-cloned (e.g under `~~/`) and install the dependencies required by drive_api.js:
 
